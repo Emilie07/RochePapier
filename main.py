@@ -5,11 +5,10 @@ Il suffit de modifier les méthodes nécessaires à votre jeu.
 import random
 
 import arcade
-
 import game_state
 #import arcade.gui
 
-#from attack_animation import AttackType, AttackAnimation
+from attack_animation import AttackType, AttackAnimation
 from game_state import GameState
 
 SCREEN_WIDTH = 1024
@@ -44,13 +43,17 @@ class MyGame(arcade.Window):
        self.rock = None
        self.paper = None
        self.scissors = None
+
        self.player_score = 0
        self.computer_score = 0
+
        self.player_attack_type = {}
        self.computer_attack_type = None
+
        self.player_attack_chosen = False
        self.player_won_round = None
        self.draw_round = None
+
        self.game_state = game_state.GameState.NOT_STARTED
 
    def setup(self):
@@ -61,9 +64,9 @@ class MyGame(arcade.Window):
        # C'est ici que vous allez créer vos listes de sprites et vos sprites.
        # Prenez note que vous devriez attribuer une valeur à tous les attributs créés dans __init__
 
-       pass
-
-
+       self.game_state = GameState.NOT_STARTED
+       self.computer_score = 0
+       self.player_score = 0
 
    def validate_victory(self):
        """
@@ -138,7 +141,39 @@ class MyGame(arcade.Window):
        #vérifier si le jeu est actif (ROUND_ACTIVE) et continuer l'animation des attaques
        #si le joueur a choisi une attaque, générer une attaque de l'ordinateur et valider la victoire
        #changer l'état de jeu si nécessaire (GAME_OVER)
-       pass
+
+       self.rock.on_update()
+       self.paper.on_update()
+       self.scissors.on_update()
+
+       self.computer_rock.on_update()
+       self.computer_paper.on_update()
+       self.computer_scissors.on_update()
+
+       if self.game_state == GameState.VALIDATE_VICTORY:
+           if self.player_attack_type == AttackType.ROCK:
+               if self.computer_attack_type == AttackType.ROCK:
+                   pass
+               if self.computer_attack_type == AttackType.PAPER:
+                   self.computer_score += 1
+               if self.computer_attack_type == AttackType.SCISSORS:
+                   self.player_score += 1
+
+           if self.player_attack_type == AttackType.PAPER:
+               if self.computer_attack_type == AttackType.PAPER:
+                   pass
+               if self.computer_attack_type == AttackType.SCISSORS:
+                   self.computer_score += 1
+               if self.computer_attack_type == AttackType.ROCK:
+                   self.player_score += 1
+
+           if self.player_attack_type == AttackType.SCISSORS:
+               if self.computer_attack_type == AttackType.SCISSORS:
+                   pass
+               if self.computer_attack_type == AttackType.ROCK:
+                   self.computer_score += 1
+               if self.computer_attack_type == AttackType.PAPER:
+                   self.player_score += 1
 
    def on_key_press(self, key, key_modifiers):
        """
@@ -179,13 +214,11 @@ class MyGame(arcade.Window):
        # Rappel que si le joueur choisi une attaque, self.player_attack_chosen = True
        pass
 
-
 def main():
    """ Main method """
    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
    game.setup()
    arcade.run()
-
 
 if __name__ == "__main__":
    main()
