@@ -47,10 +47,13 @@ class MyGame(arcade.Window):
        self.player_score = 0
        self.computer_score = 0
 
-       self.player_attack_type = {}
-       self.computer_attack_type = None
+       if self.player_attack_type = True:
+           self.player_attack_type = {AttackType.ROCK, AttackType.PAPER, AttackType.SCISSORS}
+       if self.computer_attack_type = True:
+           self.computer_attack_type = {AttackType.ROCK, AttackType.PAPER, AttackType.SCISSORS}
 
        self.player_attack_chosen = False
+       self.player_sprite_chosen = True
        self.player_won_round = None
        self.draw_round = None
 
@@ -188,6 +191,12 @@ class MyGame(arcade.Window):
        """
        if (self.game_state == game_state.GameState.NOT_STARTED and key == arcade.key.SPACE):
            self.game_state = game_state.GameState.ROUND_ACTIVE
+       if (self.game_state == game_state.GameState.ROUND_DONE and key == arcade.key.SPACE):
+           self.game_state = game_state.GameState.ROUND_ACTIVE
+       if (self.game_state == game_state.GameState.GAME_OVER and key == arcade.key.SPACE):
+           self.game_state = game_state.GameState.ROUND_ACTIVE
+
+        """N'oubliez pas de remettre à faux ou 0 toute variable qui sert à la validation"""
 
    def reset_round(self):
        """
@@ -212,7 +221,20 @@ class MyGame(arcade.Window):
 
        # Test de collision pour le type d'attaque (self.player_attack_type).
        # Rappel que si le joueur choisi une attaque, self.player_attack_chosen = True
-       pass
+       if self.rock.collides_with_point((x, y)):
+           self.player_attack_type = AttackType.ROCK
+           self.computer_attack_type = True
+           self.game_state = GameState.VALIDATE_VICTORY
+
+       if self.paper.collides_with_point((x, y)):
+           self.player_attack_type = AttackType.PAPER
+           self.computer_attack_type = True
+           self.game_state = GameState.VALIDATE_VICTORY
+
+       if self.scissors.collides_with_point((x, y)):
+           self.player_attack_type = AttackType.SCISSORS
+           self.computer_attack_type = True
+           self.game_state = GameState.VALIDATE_VICTORY
 
 def main():
    """ Main method """
