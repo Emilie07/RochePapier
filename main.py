@@ -46,13 +46,8 @@ class MyGame(arcade.Window):
 
        self.player_score = 0
        self.computer_score = 0
-
-       if self.player_attack_type = True:
-           self.player_attack_type = {AttackType.ROCK, AttackType.PAPER, AttackType.SCISSORS}
-       if self.computer_attack_type = True:
-           self.computer_attack_type = {AttackType.ROCK, AttackType.PAPER, AttackType.SCISSORS}
-
-       self.player_attack_chosen = False
+       self.player_attack_type = None
+       self.computer_attack_type = None
        self.player_sprite_chosen = True
        self.player_won_round = None
        self.draw_round = None
@@ -66,10 +61,28 @@ class MyGame(arcade.Window):
        """
        # C'est ici que vous allez créer vos listes de sprites et vos sprites.
        # Prenez note que vous devriez attribuer une valeur à tous les attributs créés dans __init__
+       #self.game_state = GameState.NOT_STARTED
+       #self.computer_score = 0
+       #self.player_score = 0
+       self.player = arcade.Sprite(Assets/faceBeard.png)
+       self.computer = arcade.Sprite(Assets/compy.png)
 
-       self.game_state = GameState.NOT_STARTED
-       self.computer_score = 0
+       self.players = arcade.SpriteList()
+       self.players.append(self.player)
+       self.players.append(self.computer)
+       self.rock = AttackAnimation(AttackType.ROCK)
+       self.paper = AttackAnimation(AttackType.PAPER)
+       self.scissors = AttackAnimation(AttackType.SCISSORS)
+
        self.player_score = 0
+       self.computer_score = 0
+       self.player_attack_type = None
+       self.computer_attack_type = None
+       self.player_sprite_chosen = True
+       self.player_won_round = None
+       self.draw_round = None
+
+       self.game_state = game_state.GameState.ROUND_ACTIVE
 
    def validate_victory(self):
        """
@@ -153,30 +166,33 @@ class MyGame(arcade.Window):
        self.computer_paper.on_update()
        self.computer_scissors.on_update()
 
-       if self.game_state == GameState.VALIDATE_VICTORY:
-           if self.player_attack_type == AttackType.ROCK:
-               if self.computer_attack_type == AttackType.ROCK:
-                   pass
-               if self.computer_attack_type == AttackType.PAPER:
-                   self.computer_score += 1
-               if self.computer_attack_type == AttackType.SCISSORS:
-                   self.player_score += 1
+       pc_attack = randint(0, 2)
+       if pc_attack == 0:
+           self.player_attack_type == AttackType.ROCK
+           if self.computer_attack_type == AttackType.ROCK:
+               pass
+           if self.computer_attack_type == AttackType.PAPER:
+               self.computer_score += 1
+           if self.computer_attack_type == AttackType.SCISSORS:
+               self.player_score += 1
 
-           if self.player_attack_type == AttackType.PAPER:
-               if self.computer_attack_type == AttackType.PAPER:
-                   pass
-               if self.computer_attack_type == AttackType.SCISSORS:
-                   self.computer_score += 1
-               if self.computer_attack_type == AttackType.ROCK:
-                   self.player_score += 1
+       if pc_attack == 1:
+           self.player_attack_type == AttackType.PAPER
+           if self.computer_attack_type == AttackType.PAPER:
+               pass
+           if self.computer_attack_type == AttackType.SCISSORS:
+               self.computer_score += 1
+           if self.computer_attack_type == AttackType.ROCK:
+               self.player_score += 1
 
-           if self.player_attack_type == AttackType.SCISSORS:
-               if self.computer_attack_type == AttackType.SCISSORS:
-                   pass
-               if self.computer_attack_type == AttackType.ROCK:
-                   self.computer_score += 1
-               if self.computer_attack_type == AttackType.PAPER:
-                   self.player_score += 1
+       if pc_attack == 2:
+           self.player_attack_type == AttackType.SCISSORS
+           if self.computer_attack_type == AttackType.SCISSORS:
+               pass
+           if self.computer_attack_type == AttackType.ROCK:
+               self.computer_score += 1
+           if self.computer_attack_type == AttackType.PAPER:
+               self.player_score += 1
 
    def on_key_press(self, key, key_modifiers):
        """
@@ -193,10 +209,13 @@ class MyGame(arcade.Window):
            self.game_state = game_state.GameState.ROUND_ACTIVE
        if (self.game_state == game_state.GameState.ROUND_DONE and key == arcade.key.SPACE):
            self.game_state = game_state.GameState.ROUND_ACTIVE
+           game_state.GameState.ROUND_DONE = False
        if (self.game_state == game_state.GameState.GAME_OVER and key == arcade.key.SPACE):
            self.game_state = game_state.GameState.ROUND_ACTIVE
+           game_state.GameState.GAME_OVER = False
+           self.player_score = 0
 
-        """N'oubliez pas de remettre à faux ou 0 toute variable qui sert à la validation"""
+       """N'oubliez pas de remettre à faux ou 0 toute variable qui sert à la validation"""
 
    def reset_round(self):
        """
